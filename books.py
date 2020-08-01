@@ -15,14 +15,12 @@ with open('Books.csv', mode='w') as csv_file:
    writer.writeheader()
 
 
-
+# initialise variables
 book_url = []
 book_title = []
 book_price = []
 book_rating = []
 book_availability = []
-
-
 num_pages = 1
 
 def rating_dict(argument):
@@ -44,6 +42,7 @@ def scrape_page(page_number):
 	response = requests.get(url)
 	webpage = soup(response.content,"html.parser")
 
+	# retrieve and set number of pages 
 	if page_number == 1:
 		global num_pages
 		num_pages = int(webpage.find("li", {"class": "current"}).text.strip().split(" ")[3])
@@ -70,6 +69,7 @@ def scrape_page(page_number):
 page_number = 1
 scrape_page(page_number)
 
+# carry out pagination
 while page_number != num_pages:
 	page_number += 1
 	scrape_page(page_number)
@@ -84,4 +84,6 @@ data = {
 }
 
 df = DataFrame(data, columns = ['Book_Url','Book_Title','Book_Price','Book_Rating','Book_Availability'])
+
+# encoding included to preserve currency symbol
 df.to_csv('Books.csv', encoding='utf-8-sig')
